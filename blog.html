@@ -9,6 +9,7 @@
     <div id="posts-container">
       <p>No posts yet. Use the form below to add new posts.</p>
     </div>
+    <a href="#blog-form-section" class="btn" id="write-post-link">Write a Post</a>
   </div>
   <aside class="blog-sidebar">
     <h3>Categories</h3>
@@ -24,8 +25,8 @@
       <li>{{ datetime.utcnow().year - 1 }}</li>
     </ul>
   </aside>
-  <div class="blog-form">
-    <h3>Add a New Post</h3>
+  <div class="blog-form" id="blog-form-section">
+    <h3>Write a Post</h3>
     <form id="blog-form">
       <input type="text" name="title" placeholder="Post Title" required />
       <input type="text" name="author" placeholder="Author" required />
