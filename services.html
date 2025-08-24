@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}Services – IgnitoSolutions{% endblock %}
+
+{% block content %}
+<section class="services-page section">
+  <h2>Our Services</h2>
+  <div class="services-list">
+    {% for svc in services %}
+    <div class="service-card" id="service-{{ svc.id }}">
+      <img src="{{ url_for('static', filename='images/' + svc.image_file) }}" alt="{{ svc.name }} thumbnail" />
+      <h3>{{ svc.name }}</h3>
+      <p>{{ svc.description }}</p>
+      <div class="price">{{ svc.price_display }}</div>
+      {% set price_value = svc.price_display.replace('Starting from ', '').replace('$', '').replace(',', '') %}
+      {% if 'Design Your Bundle' in svc.price_display %}
+      <a href="{{ url_for('contact_page') }}" class="cta-btn" data-name="{{ svc.name }}">Design Your Bundle</a>
+      {% elif 'Tailored' in svc.price_display or 'Check' in svc.price_display %}
+      <a href="{{ url_for('contact_page') }}" class="cta-btn" data-name="{{ svc.name }}">Contact Us</a>
+      {% else %}
+      <button data-id="{{ svc.id }}" data-name="{{ svc.name }}" data-price="{{ price_value }}">Add to Cart</button>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  <!-- Cost Calculator -->
+  <div class="calculator">
+    <h3>Service Cost Calculator</h3>
+    <form id="cost-calculator-form">
+      <select id="calc-service">
+        <option value="">Select a service</option>
+        {% for svc in services %}
+        {% set price_num = svc.price_display.replace('Starting from ', '').replace('$', '').replace(',', '') %}
+        {% if price_num.replace('.', '').isdigit() %}
+        <option value="{{ price_num }}">{{ svc.name }}</option>
+        {% endif %}
+        {% endfor %}
+      </select>
+      <input type="number" id="calc-quantity" placeholder="Quantity" min="1" value="1" />
+      <button type="submit">Calculate</button>
+    </form>
+    <div id="calc-result"></div>
+  </div>
+</section>
+{% endblock %}

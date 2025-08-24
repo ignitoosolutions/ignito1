@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Checkout – IgnitoSolutions{% endblock %}
+
+{% block content %}
+<section class="checkout-section section">
+  <h2>Checkout</h2>
+  <div id="checkout-summary"></div>
+  <form id="checkout-form">
+    <input name="name" placeholder="Your Name" required />
+    <input type="email" name="email" placeholder="Your Email" required />
+    <textarea name="message" placeholder="Notes (optional)"></textarea>
+    <button type="submit">Place Order</button>
+  </form>
+  <div id="paypal-button-container"></div>
+</section>
+{% endblock %}
+
+{% block body_extra %}
+<script src="https://www.paypal.com/sdk/js?client-id=sb&currency=USD"></script>
+<script>
+  // PayPal integration is handled in static/js/script.js
+</script>
+{% endblock %}

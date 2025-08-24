@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}IgnitoSolutions{% endblock %}</title>
+
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  {% block head_extra %}{% endblock %}
+</head>
+<body data-theme="dark">
+  <!-- Header / Nav -->
+  <header class="site-header">
+    <nav class="navbar">
+      <div class="nav-inner">
+        <a class="brand" href="{{ url_for('index') }}" aria-label="IgnitoSolutions home">
+          <img src="{{ url_for('static', filename='images/logo.png') }}" alt="IgnitoSolutions" class="brand-logo" />
+        </a>
+
+        <ul class="nav-links">
+          <li><a href="{{ url_for('services_page') }}">Services</a></li>
+          <li><a href="{{ url_for('about_page') }}">About</a></li>
+          <li><a href="{{ url_for('blog_page') }}">Blog</a></li>
+          <li><a href="{{ url_for('contact_page') }}">Contact</a></li>
+        </ul>
+
+        <div class="nav-right">
+          <button id="theme-toggle" aria-label="Toggle theme" class="icon-btn">
+            <i class="fa-regular fa-moon"></i>
+          </button>
+
+          <!-- Apple-like bag icon + dropdown mini-cart -->
+          <button id="cart-button" class="icon-btn" aria-haspopup="true" aria-expanded="false" aria-label="Open cart">
+            <i class="fa-solid fa-bag-shopping"></i>
+            <span class="cart-count">0</span>
+          </button>
+          <div id="cart-dropdown" class="cart-dropdown" aria-hidden="true">
+            <div class="cart-dropdown-body">
+              <ul id="cart-items"></ul>
+              <div class="cart-dropdown-total">
+                <span>Total</span>
+                <strong id="cart-total">$0.00</strong>
+              </div>
+              <!-- FIX: remove globals() usage -->
+              <a class="btn btn-gold btn-block" href="{{ checkout_url|default('/checkout') }}">Checkout</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="page-content">{% block content %}{% endblock %}</main>
+
+  <footer class="site-footer">
+    <div class="footer-col">
+      <h4>Services</h4>
+      <ul>
+        {% if services is defined %}
+          {% for service in services %}
+          <li><a href="{{ url_for('services_page') }}#service-{{ service.id }}">{{ service.name }}</a></li>
+          {% endfor %}
+        {% endif %}
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="{{ url_for('about_page') }}">About</a></li>
+        <li><a href="{{ url_for('contact_page') }}">Contact</a></li>
+        <li><a href="{{ url_for('privacy_policy') }}">Privacy Policy</a></li>
+        <li><a href="{{ url_for('terms_and_conditions') }}">Terms &amp; Conditions</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <p>Email: <a href="mailto:info@ignito-eg.co">info@ignito-eg.co</a></p>
+      <div class="socials">
+        <a href="https://www.facebook.com/profile.php?id=61579634436816" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
+        <a href="https://www.instagram.com/ignitosolutions/" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  {% block body_extra %}{% endblock %}
+</body>
+</html>

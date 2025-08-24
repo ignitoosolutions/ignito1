@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Contact – IgnitoSolutions{% endblock %}
+
+{% block content %}
+<section class="contact-section section">
+  <h2>Contact Us</h2>
+  <div class="contact-content">
+    <form id="contact-form">
+      <input name="name" placeholder="Your Name" required />
+      <input type="email" name="email" placeholder="Your Email" required />
+      <textarea name="message" placeholder="How can we help?" required></textarea>
+      <button type="submit">Send</button>
+    </form>
+    <div id="map" class="map"></div>
+  </div>
+</section>
+{% endblock %}
+
+{% block body_extra %}
+<!-- Load Google Maps JS API (note: replace with live API key in production) -->
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&callback=initMap"></script>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}Blog – IgnitoSolutions{% endblock %}
+
+{% block content %}
+<section class="blog-page section">
+  <div class="blog-main">
+    <h2>Latest Posts</h2>
+    <div id="posts-container">
+      <p>No posts yet. Use the form below to add new posts.</p>
+    </div>
+  </div>
+  <aside class="blog-sidebar">
+    <h3>Categories</h3>
+    <ul>
+      <li>Marketing</li>
+      <li>Apps</li>
+      <li>Strategy</li>
+      <li>Operations</li>
+    </ul>
+    <h3>Archives</h3>
+    <ul>
+      <li>{{ datetime.utcnow().year }}</li>
+      <li>{{ datetime.utcnow().year - 1 }}</li>
+    </ul>
+  </aside>
+  <div class="blog-form">
+    <h3>Add a New Post</h3>
+    <form id="blog-form">
+      <input type="text" name="title" placeholder="Post Title" required />
+      <input type="text" name="author" placeholder="Author" required />
+      <input type="date" name="date" />
+      <input type="file" name="image" accept="image/*" />
+      <textarea name="content" rows="5" placeholder="Post content" required></textarea>
+      <button type="submit">Add Post</button>
+    </form>
+  </div>
+</section>
+{% endblock %}
