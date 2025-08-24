@@ -20,23 +20,4 @@
   </div>
 </section>
 
-<!-- Quote Modal -->
-<div id="quote-modal" class="modal">
-  <div class="modal-content">
-    <span class="close" id="quote-close">&times;</span>
-    <h3>Request a Quote</h3>
-    <form id="quote-form">
-      <input type="text" name="name" placeholder="Your Name" required />
-      <input type="email" name="email" placeholder="Your Email" required />
-      <select name="service" required>
-        <option value="">Select a service</option>
-        {% for svc in services %}
-        <option value="{{ svc.name }}">{{ svc.name }}</option>
-        {% endfor %}
-      </select>
-      <textarea name="message" rows="4" placeholder="Project details"></textarea>
-      <button type="submit">Submit</button>
-    </form>
-  </div>
-</div>
 {% endblock %}

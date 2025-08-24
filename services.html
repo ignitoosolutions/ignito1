@@ -5,6 +5,15 @@
 {% block content %}
 <section class="services-page section">
   <h2>Our Services</h2>
+  {% set categories = {
+      'Market Research':'Research',
+      'Marketing':'Marketing',
+      'Apps and Software Development':'Development',
+      'Business Strategy':'Strategy',
+      'Operational Reporting':'Operations',
+      'Offshore Teams':'Operations',
+      'Lead Generation':'Marketing'
+    } %}
   <div class="services-list">
     {% for svc in services %}
     <div class="service-card" id="service-{{ svc.id }}">
@@ -14,11 +23,11 @@
       <div class="price">{{ svc.price_display }}</div>
       {% set price_value = svc.price_display.replace('Starting from ', '').replace('$', '').replace(',', '') %}
       {% if 'Design Your Bundle' in svc.price_display %}
-      <a href="{{ url_for('contact_page') }}" class="cta-btn" data-name="{{ svc.name }}">Design Your Bundle</a>
+      <button class="design-bundle-btn" data-service="{{ svc.name }}">Design Your Bundle</button>
       {% elif 'Tailored' in svc.price_display or 'Check' in svc.price_display %}
       <a href="{{ url_for('contact_page') }}" class="cta-btn" data-name="{{ svc.name }}">Contact Us</a>
       {% else %}
-      <button data-id="{{ svc.id }}" data-name="{{ svc.name }}" data-price="{{ price_value }}">Add to Cart</button>
+      <button data-id="{{ svc.id }}" data-name="{{ svc.name }}" data-price="{{ price_value }}" data-category="{{ categories.get(svc.name, 'General') }}">Add to Cart</button>
       {% endif %}
     </div>
     {% endfor %}

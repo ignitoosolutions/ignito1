@@ -93,7 +93,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const id = btn.getAttribute('data-id');
       const name = btn.getAttribute('data-name');
       const price = parseFloat(btn.getAttribute('data-price'));
-      if (id && name && !isNaN(price)) addToCart(id, name, price);
+      const category = btn.getAttribute('data-category') || 'General';
+      if (id && name && !isNaN(price)) addToCart(id, name, price, category);
     });
   });
 
@@ -103,30 +104,69 @@ document.addEventListener('DOMContentLoaded', () => {
     if (cartItemsList) {
       cartItemsList.innerHTML = '';
       let total = 0;
+      const grouped = {};
       cart.forEach((item, idx) => {
-        total += item.price * item.quantity;
-        const li = document.createElement('li');
-        li.innerHTML = `
-          <span>${item.name} x ${item.quantity}</span>
-          <span>$${(item.price*item.quantity).toFixed(2)}</span>
-        `;
-        // remove button
-        const remove = document.createElement('button');
-        remove.textContent = 'Remove';
-        remove.className = 'btn';
-        remove.style.marginLeft = '8px';
-        remove.onclick = () => { cart.splice(idx,1); saveCart(); updateCartUI(); };
-        li.appendChild(remove);
-        cartItemsList.appendChild(li);
+        const cat = item.category || 'General';
+        if (!grouped[cat]) grouped[cat] = [];
+        grouped[cat].push({ item, idx });
+      });
+      Object.entries(grouped).forEach(([cat, items]) => {
+        const header = document.createElement('li');
+        header.textContent = cat;
+        header.className = 'cart-category';
+        cartItemsList.appendChild(header);
+        items.forEach(({ item, idx }) => {
+          total += item.price * item.quantity;
+          const li = document.createElement('li');
+          const nameSpan = document.createElement('span');
+          nameSpan.textContent = item.name;
+          const right = document.createElement('span');
+          const qtyWrap = document.createElement('span');
+          qtyWrap.className = 'cart-qty';
+          const minus = document.createElement('button');
+          minus.textContent = '-';
+          minus.className = 'qty-btn';
+          minus.onclick = () => {
+            if (item.quantity > 1) item.quantity -= 1;
+            else cart.splice(idx,1);
+            saveCart(); updateCartUI();
+          };
+          const qty = document.createElement('span');
+          qty.textContent = item.quantity;
+          const plus = document.createElement('button');
+          plus.textContent = '+';
+          plus.className = 'qty-btn';
+          plus.onclick = () => { item.quantity += 1; saveCart(); updateCartUI(); };
+          qtyWrap.appendChild(minus);
+          qtyWrap.appendChild(qty);
+          qtyWrap.appendChild(plus);
+          const price = document.createElement('span');
+          price.textContent = `$${(item.price*item.quantity).toFixed(2)}`;
+          const remove = document.createElement('button');
+          remove.textContent = 'Remove';
+          remove.className = 'btn';
+          remove.style.marginLeft = '8px';
+          remove.onclick = () => { cart.splice(idx,1); saveCart(); updateCartUI(); };
+          right.appendChild(qtyWrap);
+          right.appendChild(price);
+          right.appendChild(remove);
+          li.appendChild(nameSpan);
+          li.appendChild(right);
+          cartItemsList.appendChild(li);
+        });
       });
       if (cartTotalEl) cartTotalEl.textContent = `$${total.toFixed(2)}`;
     }
   }
-  function addToCart(id,name,price){
+  function addToCart(id,name,price,category){
     const ex = cart.find(i=>i.id===id);
     if (ex) ex.quantity += 1;
-    else cart.push({ id, name, price, quantity: 1 });
+    else cart.push({ id, name, price, quantity: 1, category });
     saveCart(); updateCartUI();
+    if (cartBtn) {
+      cartBtn.classList.add('cart-bounce');
+      cartBtn.addEventListener('animationend', () => cartBtn.classList.remove('cart-bounce'), { once: true });
+    }
     // small affordance: briefly open the dropdown
     if (cartDropdown && !cartDropdown.classList.contains('open')) {
       cartDropdown.classList.add('open');
@@ -223,29 +263,35 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ===== Quote Modal on Home Page =====
+  // ===== Quote Modal =====
   const quoteBtn = document.getElementById('quote-btn');
   const quoteModal = document.getElementById('quote-modal');
   const quoteClose = document.getElementById('quote-close');
   const quoteForm = document.getElementById('quote-form');
-  if (quoteBtn && quoteModal) {
-    // Open modal
-    quoteBtn.addEventListener('click', () => {
-      quoteModal.style.display = 'flex';
+  const designBtns = document.querySelectorAll('.design-bundle-btn');
+  if (quoteModal) {
+    if (quoteBtn) {
+      quoteBtn.addEventListener('click', () => {
+        quoteModal.style.display = 'flex';
+      });
+    }
+    designBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        quoteModal.style.display = 'flex';
+        const serviceSelect = quoteForm ? quoteForm.querySelector('select[name="service"]') : null;
+        if (serviceSelect) serviceSelect.value = btn.getAttribute('data-service');
+      });
     });
-    // Close via X
     if (quoteClose) {
       quoteClose.addEventListener('click', () => {
         quoteModal.style.display = 'none';
       });
     }
-    // Close when clicking outside modal content
     window.addEventListener('click', (e) => {
       if (e.target === quoteModal) {
         quoteModal.style.display = 'none';
       }
     });
-    // Submit quote via AJAX to contact route
     if (quoteForm) {
       quoteForm.addEventListener('submit', (e) => {
         e.preventDefault();
